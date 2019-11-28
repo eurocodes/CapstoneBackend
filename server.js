@@ -1,14 +1,19 @@
+/* eslint-disable linebreak-style */
+const dotenv = require('dotenv');
 const app = require('./app');
 const db = require('./src/usingDB/db/db');
-const dotenv = require('dotenv');
 
 dotenv.config();
 
+// eslint-disable-next-line no-undef
 PORT = process.env.PORT;
 
 db.connect()
-.then(() => {
+  .then(() => {
+    // eslint-disable-next-line no-undef
     app.listen(PORT, () => {
-        console.log('Listening on port: ' + PORT);
-    })
-})
+      // eslint-disable-next-line no-console
+      // eslint-disable-next-line no-undef
+      console.log(`Listening on port: ${PORT}`);
+    });
+  });

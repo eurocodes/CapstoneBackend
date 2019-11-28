@@ -1,3 +1,6 @@
+// eslint-disable-next-line linebreak-style
+/* eslint-disable no-console */
+/* eslint-disable linebreak-style */
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 
@@ -6,17 +9,19 @@ dotenv.config();
 const connectionString = process.env.NODE_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL;
 
 const pool = new Pool({
-  connectionString
-}); 
+  connectionString,
+});
 
+// eslint-disable-next-line consistent-return
 const connect = async () => {
   try {
     const client = await pool.connect();
     return client;
   } catch (error) {
+    // eslint-disable-next-line no-undef
     die(error);
   }
-}
+};
 
 /**
  * Create User Table
@@ -50,7 +55,7 @@ const createUserTable = () => {
  * Drop Table Users
  */
 const dropUserTable = () => {
-  const queryText = `DROP TABLE IF EXISTS users`;
+  const queryText = 'DROP TABLE IF EXISTS users';
   pool.query(queryText)
     .then((res) => {
       console.log(res);
@@ -77,11 +82,11 @@ const dropAllTables = () => {
 };
 
 function close() {
-  return pool.end()
+  return pool.end();
 }
 
 module.exports = {
-  createAllTables, dropAllTables, createUserTable, dropUserTable, pool, connect, close
+  createAllTables, dropAllTables, createUserTable, dropUserTable, pool, connect, close,
 };
 
 require('make-runnable');
