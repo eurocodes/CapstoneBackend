@@ -32,6 +32,7 @@ const User = {
     const {
       isAdmin, firstName, lastName, email, gender, jobRole, department, address,
     } = req.body;
+    console.log('Request body: ', isAdmin, lastName)
 
 
     try {

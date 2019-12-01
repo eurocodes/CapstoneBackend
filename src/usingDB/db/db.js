@@ -1,3 +1,5 @@
+/* eslint-disable linebreak-style */
+// eslint-disable-next-line linebreak-style
 // eslint-disable-next-line linebreak-style
 /* eslint-disable no-console */
 /* eslint-disable linebreak-style */
@@ -28,7 +30,7 @@ const connect = async () => {
  */
 const createUserTable = () => {
   const queryText = `CREATE TABLE IF NOT EXISTS users(
-    userid serial PRIMARY KEY,
+    user_id serial PRIMARY KEY,
     isAdmin boolean NOT NULL,
     firstName VARCHAR(128) NOT NULL,
     lastName VARCHAR(128) NOT NULL,
@@ -52,6 +54,30 @@ const createUserTable = () => {
 };
 
 /**
+ * Create Article Table
+ */
+const createArticleTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS articles(
+    article_id serial PRIMARY KEY,
+    title VARCHAR(128) NOT NULL,
+    article VARCHAR(510) NOT NULL,
+    owner_id integer NOT NULL,
+    createdOn TIMESTAMP,
+    modifiedOn TIMESTAMP,
+    FOREIGN KEY (owner_id) REFERENCES users (user_id) ON DELETE CASCADE
+  )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
+
+/**
  * Drop Table Users
  */
 const dropUserTable = () => {
@@ -67,18 +93,18 @@ const dropUserTable = () => {
 };
 
 /**
- * Create All Tables
+ * Drop Table Articles
  */
-
-const createAllTables = () => {
-  createUserTable();
-};
-
-/**
-  * Drop All Tables
-  */
-const dropAllTables = () => {
-  dropUserTable();
+const dropArticleTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS articles';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
 };
 
 function close() {
@@ -86,7 +112,7 @@ function close() {
 }
 
 module.exports = {
-  createAllTables, dropAllTables, createUserTable, dropUserTable, pool, connect, close,
+  createUserTable, dropUserTable, createArticleTable, dropArticleTable, pool, connect, close,
 };
 
 require('make-runnable');
