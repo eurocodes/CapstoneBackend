@@ -4,7 +4,7 @@
   "description": "This is my #DevCTrainingWithAndela Capstone Project 'Team-work' Backend. Teamwork is an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
   "main": "server.js",
   "scripts": {
-    "test": "set process.env.NODE_ENV=test && node src/usingDB/db/db.js dropArticleTable && node src/usingDB/db/db.js dropUserTable && node src/usingDB/db/db.js createUserTables && mocha --recursive --exit || true",
+    "test": "set process.env.NODE_ENV=test && node src/usingDB/db/db.js dropArticleTable && node src/usingDB/db/db.js dropUserTable && node src/usingDB/db/db.js createUserTable && node src/usingDB/db/db.js createArticleTable && mocha --recursive --exit || true",
     "db-refresh:test": "cross-env NODE_ENV=test && node src/usingDB/db/db.js dropAllTables && node src/usingDB/db/db.js createAllTables",
     "db-refresh:dev": "cross-env NODE_ENV=development && node src/usingDB/db/db.js dropAllTables && node src/usingDB/db/db.js createAllTables",
     "dev-start": "cross-env NODE_ENV=development && server.js"

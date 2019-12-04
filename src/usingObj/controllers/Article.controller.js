@@ -16,25 +16,22 @@ const Article = {
     const dateTime = `${date} ${time}`;
     const createdOn = dateTime;
     const modifiedOn = dateTime;
+    const ownerId = req.user.id;
 
     const {
-      title, article, ownerId,
+      title, article,
     } = req.body;
-    console.log('My title: ', title, ownerId);
-    // const ownerId = req.user.user_id;
-    const createQuery = `INSERT INTO articles(title, article, owner_id, createdOn, modifiedOn)
-      VALUES($1, $2, $3, $4, $5,) returning *`;
+    const createQuery = `INSERT INTO articles (title, article, owner_id, createdOn, modifiedOn)
+      VALUES($1, $2, $3, $4, $5) returning *`;
     const values = [title, article, ownerId, createdOn, modifiedOn];
-    // console.log('values: ', values);
 
     try {
-      const { rows } = await db.query(createQuery, values);
-      // console.log('Print title: ', title);
+      const { rows } = await db.pool.query(createQuery, values);
       return res.status(201).send({
         status: 'success',
         data: {
           message: 'Article successfully posted',
-          articleId: rows[0],
+          articleId: rows[0].article_id,
           title,
           article,
           createdOn,
