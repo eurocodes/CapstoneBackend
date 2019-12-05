@@ -25,7 +25,7 @@ describe('To post an Article', () => {
         title: 'My Article Title', article: 'This is the body of my article for test purposes',
       })
       .then((res) => {
-        expect(res.statusCode).to.equal(200);
+        expect(res.statusCode).to.equal(201);
         expect(res.body).to.include.keys('status');
         expect(res.body).to.include.keys('data');
         expect(res.body.status).to.equal('success');
