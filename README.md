@@ -3,5 +3,4 @@ This is my #DevCTrainingWithAndela Capstone Project 'Team-work' Backend. Teamwor
 
 [![Build Status](https://travis-ci.com/eurocodes/CapstoneBackend.svg?branch=develop)](https://travis-ci.com/eurocodes/CapstoneBackend)
 [![Build Status](https://travis-ci.com/eurocodes/CapstoneBackend.svg?branch=develop)](https://travis-ci.com/eurocodes/CapstoneBackend)
-https://travis-ci.com/eurocodes/CapstoneBackend.svg?branch=develop
-!https://travis-ci.com/eurocodes/CapstoneBackend.svg?branch=develop!:https://travis-ci.com/eurocodes/CapstoneBackend
+{<img src="https://travis-ci.com/eurocodes/CapstoneBackend.svg?branch=develop" alt="Build Status" />}[https://travis-ci.com/eurocodes/CapstoneBackend]
