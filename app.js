@@ -6,7 +6,10 @@ const Auth = require('./src/usingDB/middleware/Auth');
 
 const app = express();
 app.use(express.json());
-app.post('/api/v1/auth/users', UserWithDB.create);
-app.post('/api/v1/auth/signin', UserWithDB.login);
+
+app.get('/api/v1/get-all-articles', Auth.verifyToken, ArticleCtrl.getAll);
 app.post('/api/v1/post-articles', Auth.verifyToken, ArticleCtrl.create);
+app.post('/api/v1/auth/signin', UserWithDB.login);
+app.post('/api/v1/auth/users', UserWithDB.create);
+
 module.exports = app;

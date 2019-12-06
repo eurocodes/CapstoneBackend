@@ -41,6 +41,25 @@ const Article = {
       return res.status(400).send(error);
     }
   },
+
+  /**
+   * Get All Articles
+   * @param {object} req
+   * @param {object} res
+   * @param {object} Article Array
+   */
+  async getAll(req, res) {
+    const findAllQuery = 'SELECT * FROM articles Order BY createdOn DESC';
+    try {
+      const { rows } = await db.pool.query(findAllQuery);
+      return res.status(200).send({
+        status: 'success',
+        data: rows
+      })
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
 };
 
 module.exports = Article;
