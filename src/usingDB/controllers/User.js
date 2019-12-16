@@ -1,6 +1,7 @@
 /* eslint-disable linebreak-style */
 const database = require('../db/db').pool;
 const Helper = require('./Helper');
+const date = require('./Date');
 
 const User = {
   /**
@@ -22,12 +23,8 @@ const User = {
     }
     const hashPassword = Helper.hashPassword(req.body.password);
 
-    const today = new Date();
-    const date = `${today.getFullYear()}-${(today.getMonth() + 1)}-${+today.getDate()}`;
-    const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-    const dateTime = `${date} ${time}`;
-    const createdOn = dateTime;
-    const modifiedOn = dateTime;
+    const createdOn = date.generateDate();
+    const modifiedOn = date.generateDate();
 
     const {
       isAdmin, firstName, lastName, email, gender, jobRole, department, address,

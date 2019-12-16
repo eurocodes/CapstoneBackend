@@ -7,13 +7,15 @@ const { expect } = require('chai');
 const request = require('supertest');
 
 const app = require('../../app');
+const mockData = require('../utils/userDummy');
+
+const url = '/api/v1/auth/sign-up';
+const { validUser, invalidEmail, missingValue } = mockData.createUser;
 
 describe('Create a new user', () => {
-  it('Create a User, OK', (done) => {
-    request(app).post('/api/v1/auth/users')
-      .send({
-        email: 'iamugee@yahoo.com', password: 'password1', firstName: 'Ugo', lastName: 'Ugo', department: 'IT', jobRole: 'Dev', isAdmin: false,
-      })
+  it('Should return statusCode 201, User successfully created', (done) => {
+    request(app).post(url)
+      .send(validUser)
       .then((res) => {
         expect(res.statusCode).to.equal(201);
         expect(res.body).to.include.keys('status');
@@ -28,15 +30,23 @@ describe('Create a new user', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Fails to create, ', (done) => {
-    request(app).post('/api/v1/auth/users')
-      .send({
-        email: 'iamugee@yahoo.com', password: 'password1', firstName: 'Ugo', lastName: 'Ugo', department: 'IT', jobRole: 'Dev', isAdmin: false,
-      })
+  it('Should return statusCode 400, Failed, Invalid email address ', (done) => {
+    request(app).post(url)
+      .send(invalidEmail)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
-        expect(res.body.status).to.equal('error');
-        expect(res.body.error).to.equal('Email address already exist');
+        expect(res.body.message).to.equal('Please enter a valid email address');
+        done();
+      })
+      .catch((error) => console.log(error));
+  });
+
+  it('Should return statusCode 400, Failed, Missing details ', (done) => {
+    request(app).post(url)
+      .send(missingValue)
+      .then((res) => {
+        expect(res.statusCode).to.equal(400);
+        expect(res.body.message).to.equal('Some values are missing');
         done();
       })
       .catch((error) => console.log(error));
