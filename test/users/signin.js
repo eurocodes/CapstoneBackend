@@ -7,11 +7,16 @@ const { expect } = require('chai');
 const request = require('supertest');
 
 const app = require('../../app');
+const mockData = require('../utils/userDummy');
 
-describe('User signin/ TEST', () => {
-  it('Sign in, OK', (done) => {
-    request(app).post('/api/v1/auth/signin')
-      .send({ email: 'iamugee@yahoo.com', password: 'password1' })
+const url = '/api/v1/auth/signin';
+
+const { validDetails, invalidDetails, missingValue } = mockData.login;
+
+describe('User signin, 200 OK', () => {
+  it('Should return statusCode 200 OK, User siggned in successfully', (done) => {
+    request(app).post(url)
+      .send(validDetails)
       .then((res) => {
         expect(res.statusCode).to.equal(200);
         expect(res.body).to.include.keys('status');
@@ -24,9 +29,20 @@ describe('User signin/ TEST', () => {
       .catch((error) => console.log(error));
   });
 
-  it('User fails to signin, error incomplete credentials', (done) => {
-    request(app).post('/api/v1/auth/users')
-      .send({ email: 'iamugeee@yahoo.co.ng' })
+  it('Should return statusCode 400 error, Invalid credentials', (done) => {
+    request(app).post(url)
+      .send(invalidDetails)
+      .then((res) => {
+        expect(res.statusCode).to.equal(400);
+        expect(res.body.message).to.equal('The credentials you provided is incorrect');
+        done();
+      })
+      .catch((error) => console.log(error));
+  });
+
+  it('Should return statusCode 400 error, Incomplete credentials', (done) => {
+    request(app).post(url)
+      .send(missingValue)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
         expect(res.body.message).to.equal('Some values are missing');
