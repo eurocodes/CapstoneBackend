@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 const createUser = {
   validUser: {
-    email: 'iamugee@yahoo.com',
+    email: 'iamugee@outlook.com',
     password: 'password1',
     firstName: 'Hilary',
     lastName: 'Ugo',
