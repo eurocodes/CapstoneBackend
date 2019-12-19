@@ -4,9 +4,9 @@
   "description": "This is my #DevCTrainingWithAndela Capstone Project 'Team-work' Backend. Teamwork is an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
   "main": "server.js",
   "scripts": {
-    "test": "set process.env.NODE_ENV=test && node src/usingDB/db/db.js dropArticleTable && node src/usingDB/db/db.js dropUserTable && node src/usingDB/db/db.js createUserTables && mocha --recursive --exit || true",
-    "db-refresh:test": "cross-env NODE_ENV=test && node src/usingDB/db/db.js dropAllTables && node src/usingDB/db/db.js createAllTables",
-    "db-refresh:dev": "cross-env NODE_ENV=development && node src/usingDB/db/db.js dropAllTables && node src/usingDB/db/db.js createAllTables",
+    "test": "set process.env.NODE_ENV=test && node src/usingDB/db/db.js createUserTable && node src/usingDB/db/db.js createFeedTable && mocha --recursive --timeout 0 --exit || true",
+    "db-refresh:test": "cross-env NODE_ENV=test && node src/usingDB/db/db.js dropArticleTable && node src/usingDB/db/db.js dropUserTable && node src/usingDB/db/db.js createUserTable && node src/usingDB/db/db.js createArticleTable",
+    "db-refresh:dev": "cross-env NODE_ENV=development && node src/usingDB/db/db.js dropArticleTable && node src/usingDB/db/db.js dropUserTable && node src/usingDB/db/db.js createUserTable && node src/usingDB/db/db.js createArticleTable",
     "dev-start": "cross-env NODE_ENV=development && server.js"
   },
   "repository": {
@@ -33,10 +33,15 @@
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
+    "cloudinary": "^1.17.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.6",
+    "file-system": "^2.2.2",
     "jsonwebtoken": "^8.5.1",
     "make-runnable": "^1.3.6",
+    "multer": "^1.4.2",
+    "multer-storage-cloudinary": "^2.2.1",
     "pg": "^7.14.0"
   }
 }

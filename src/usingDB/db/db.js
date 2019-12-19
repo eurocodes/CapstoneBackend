@@ -6,6 +6,8 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 
+const { validUser } = require('../../../test/utils/userDummy').createUser;
+
 dotenv.config();
 
 const connectionString = process.env.NODE_ENV === 'test' ? process.env.TEST_DATABASE_URL : process.env.DATABASE_URL;
@@ -56,14 +58,14 @@ const createUserTable = () => {
 /**
  * Create Article Table
  */
-const createArticleTable = () => {
-  const queryText = `CREATE TABLE IF NOT EXISTS articles(
-    article_id serial PRIMARY KEY,
+const createFeedTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS feeds(
+    feed_id serial PRIMARY KEY,
     title VARCHAR(128) NOT NULL,
-    article VARCHAR(510) NOT NULL,
+    feed VARCHAR(510) NOT NULL,
     owner_id integer NOT NULL,
-    createdOn TIMESTAMP,
-    modifiedOn TIMESTAMP,
+    createdOn TIMESTAMP with time zone,
+    modifiedOn TIMESTAMP with time zone,
     FOREIGN KEY (owner_id) REFERENCES users (user_id) ON DELETE CASCADE
   )`;
   pool.query(queryText)
@@ -75,7 +77,17 @@ const createArticleTable = () => {
       pool.end();
     });
 };
-
+const deleteRow = () => {
+  const queryText = `DELETE FROM users WHERE email LIKE ${validUser.email}`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
 
 /**
  * Drop Table Users
@@ -95,8 +107,8 @@ const dropUserTable = () => {
 /**
  * Drop Table Articles
  */
-const dropArticleTable = () => {
-  const queryText = 'DROP TABLE IF EXISTS articles';
+const dropFeedTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS feeds';
   pool.query(queryText)
     .then((res) => {
       console.log(res);
@@ -112,7 +124,7 @@ function close() {
 }
 
 module.exports = {
-  createUserTable, dropUserTable, createArticleTable, dropArticleTable, pool, connect, close,
+  createUserTable, dropUserTable, createFeedTable, dropFeedTable, pool, connect, close, deleteRow,
 };
 
 require('make-runnable');

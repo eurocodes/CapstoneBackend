@@ -1,6 +1,6 @@
 /* eslint-disable linebreak-style */
 const jwt = require('jsonwebtoken');
-const database = require('../db/db');
+const database = require('../db/db').pool;
 
 const Auth = {
   /**
@@ -11,6 +11,7 @@ const Auth = {
   // eslint-disable-next-line consistent-return
   async verifyToken(req, res, next) {
     const token = req.headers['x-access-token'];
+    // const token = req.headers.authorization;
     if (!token) {
       return res.status(400).send({ message: 'Token is not provided' });
     }

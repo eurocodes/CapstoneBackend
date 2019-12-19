@@ -1,6 +1,7 @@
 /* eslint-disable linebreak-style */
 const database = require('../db/db').pool;
 const Helper = require('./Helper');
+const date = require('./Date');
 
 const User = {
   /**
@@ -22,17 +23,12 @@ const User = {
     }
     const hashPassword = Helper.hashPassword(req.body.password);
 
-    const today = new Date();
-    const date = `${today.getFullYear()}-${(today.getMonth() + 1)}-${+today.getDate()}`;
-    const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-    const dateTime = `${date} ${time}`;
-    const createdOn = dateTime;
-    const modifiedOn = dateTime;
+    const createdOn = date.generateDate();
+    const modifiedOn = date.generateDate();
 
     const {
       isAdmin, firstName, lastName, email, gender, jobRole, department, address,
     } = req.body;
-    console.log('Request body: ', isAdmin, lastName)
 
 
     try {
@@ -40,7 +36,7 @@ const User = {
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning *`,
       [isAdmin, firstName, lastName, email, hashPassword, gender, jobRole,
         department, address, createdOn, modifiedOn]);
-      const { userid } = rows[0];
+      const userid = rows[0].user_id;
       const token = Helper.generateToken(userid);
       return res.status(201).send({
         status: 'success',
@@ -83,12 +79,13 @@ const User = {
       if (!Helper.comparePassword(rows[0].password, req.body.password)) {
         return res.status(400).send({ message: 'The credentials you provided is incorrect' });
       }
-      const token = Helper.generateToken(rows[0].id);
+      const userid = rows[0].user_id;
+      const token = Helper.generateToken(userid);
       return res.status(200).send({
         status: 'success',
         data: {
           token,
-          userid: rows[0].userid,
+          userid,
         },
       });
     } catch (error) {
