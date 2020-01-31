@@ -13,14 +13,14 @@ const Auth = {
     const token = req.headers['x-access-token'];
     // const token = req.headers.authorization;
     if (!token) {
-      return res.status(400).send({ message: 'Token is not provided' });
+      return res.status(401).send({ message: 'Token is not provided' });
     }
     try {
       const decoded = await jwt.verify(token, process.env.SECRET);
       const text = 'SELECT * FROM users WHERE user_id = $1';
       const { rows } = await database.query(text, [decoded.user_id]);
       if (!rows[0]) {
-        return res.status(400).send({ message: 'The token you provided is invalid' });
+        return res.status(401).send({ message: 'Not permitted' });
       }
       req.user = { id: decoded.user_id };
       next();

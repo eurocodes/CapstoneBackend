@@ -11,14 +11,14 @@ const imgDir = 'test/utils/image/Caterpillar.jpg';
 const url = '/api/v1/post-a-gif';
 
 const userCredentials = {
-  email: 'laryhug209@yahoo.com',
+  email: 'iamugee@outlook.com',
   password: 'password1',
 };
 
 describe('Post a gif/image', () => {
   let token;
   before((done) => {
-    request(app).post('/api/v1/auth/signin')
+    request(app).post('/api/v1/auth/login')
       .send(userCredentials)
       .end((error, res) => {
         token = res.body.data.token;

@@ -77,8 +77,81 @@ const createFeedTable = () => {
       pool.end();
     });
 };
+
+/**
+ * Create Images Table
+ */
+const createImageTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS images(
+    image_id serial PRIMARY KEY,
+    title VARCHAR(128) NOT NULL,
+    image_url VARCHAR(510) NOT NULL,
+    owner_id integer NOT NULL,
+    createdOn TIMESTAMP with time zone,
+    modifiedOn TIMESTAMP with time zone,
+    publicId VARCHAR(128) NOT NULL,
+    FOREIGN KEY (owner_id) REFERENCES users (user_id) ON DELETE CASCADE
+  )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
+/**
+ * Create Article Comment Table
+ */
+const createArticleCommentTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS article_comments(
+    comment_id serial PRIMARY KEY,
+    comment VARCHAR(510) NOT NULL,
+    article_id integer NOT NULL,
+    comment_by integer NOT NULL,
+    createdOn TIMESTAMP with time zone,
+    modifiedOn TIMESTAMP with time zone,
+    FOREIGN KEY (article_id) REFERENCES feeds (feed_id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_by) REFERENCES users (user_id) ON DELETE CASCADE
+  )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
+/**
+ * Create Images Comment Table
+ */
+const createImageCommentTable = () => {
+  const queryText = `CREATE TABLE IF NOT EXISTS image_comments(
+    comment_id serial PRIMARY KEY,
+    comment VARCHAR(510) NOT NULL,
+    image_id integer NOT NULL,
+    comment_by integer NOT NULL,
+    createdOn TIMESTAMP with time zone,
+    modifiedOn TIMESTAMP with time zone,
+    FOREIGN KEY (image_id) REFERENCES images (image_id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_by) REFERENCES users (user_id) ON DELETE CASCADE
+  )`;
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
 const deleteRow = () => {
-  const queryText = `DELETE FROM users WHERE email LIKE ${validUser.email}`;
+  const queryText = `DELETE FROM users WHERE email LIKE '${validUser.email}'`;
   pool.query(queryText)
     .then((res) => {
       console.log(res);
@@ -119,12 +192,70 @@ const dropFeedTable = () => {
     });
 };
 
+/**
+ * Drop Image Articles
+ */
+const dropImageTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS images';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
+/**
+ * Drop Image Articles
+ */
+const dropArticleCommentTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS article_comments';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
+/**
+ * Drop Image Articles
+ */
+const dropImageCommentTable = () => {
+  const queryText = 'DROP TABLE IF EXISTS image_comments';
+  pool.query(queryText)
+    .then((res) => {
+      console.log(res);
+      pool.end();
+    }).catch((error) => {
+      console.log(error);
+      pool.end();
+    });
+};
+
 function close() {
   return pool.end();
 }
 
 module.exports = {
-  createUserTable, dropUserTable, createFeedTable, dropFeedTable, pool, connect, close, deleteRow,
+  createUserTable,
+  dropUserTable,
+  createFeedTable,
+  dropFeedTable,
+  createImageTable,
+  dropImageTable,
+  createArticleCommentTable,
+  dropArticleCommentTable,
+  createImageCommentTable,
+  dropImageCommentTable,
+  pool,
+  connect,
+  close,
+  deleteRow,
 };
 
 require('make-runnable');

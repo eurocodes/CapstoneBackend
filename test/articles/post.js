@@ -11,21 +11,19 @@ const mockFeed = require('../utils/feedDummy');
 
 const url = '/api/v1/post-articles';
 const userCredentials = {
-  email: 'laryhug209@yahoo.com',
+  email: 'iamugee@outlook.com',
   password: 'password1',
 };
-const { validData, invalidData } = mockFeed.creteArticle;
-
+const { validData, invalidData } = mockFeed.createArticle;
+const expiredToken = process.env.EXPIRED;
 
 describe('Post an Article', () => {
   let token;
   before((done) => {
-    request(app).post('/api/v1/auth/signin')
+    request(app).post('/api/v1/auth/login')
       .send(userCredentials)
       .end((error, res) => {
-        // console.log(res);
         token = res.body.data.token;
-        // console.log('Token: ', token);
         expect(res.statusCode).to.equal(200);
         done();
       });
@@ -60,11 +58,11 @@ describe('Post an Article', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Token is not provided', (done) => {
+  it('Should return statusCode 401, Token is not provided', (done) => {
     request(app).post(url)
       .send(validData)
       .then((res) => {
-        expect(res.statusCode).to.equal(400);
+        expect(res.statusCode).to.equal(401);
         expect(res.body).to.include.key('message');
         expect(res.body.message).to.equal('Token is not provided');
         done();
@@ -73,12 +71,15 @@ describe('Post an Article', () => {
   });
 
   it('Should return statusCode 400, Invalid access token', (done) => {
-    request(app).post(url)
+    request(app).post(url).set('x-access-token', expiredToken)
       .send(validData)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
+        expect(res.body).to.include.key('name');
         expect(res.body).to.include.key('message');
-        expect(res.body.message).to.equal('Token is not provided');
+        expect(res.body).to.include.key('expiredAt');
+        expect(res.body.name).to.equal('TokenExpiredError');
+        expect(res.body.expiredAt).to.equal('2020-01-29T07:12:55.000Z');
         done();
       })
       .catch((error) => console.log(error));
