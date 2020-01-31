@@ -9,12 +9,27 @@ const request = require('supertest');
 const app = require('../../app');
 const mockData = require('../utils/userDummy');
 
+const userCredentials = {
+  email: 'laryhug209@yahoo.com',
+  password: 'password1',
+};
+
 const url = '/api/v1/auth/sign-up';
 const { validUser, invalidEmail, missingValue } = mockData.createUser;
 
 describe('Create a new user', () => {
+  let token;
+  before((done) => {
+    request(app).post('/api/v1/auth/login')
+      .send(userCredentials)
+      .end((error, res) => {
+        token = res.body.data.token;
+        expect(res.statusCode).to.equal(200);
+        done();
+      });
+  });
   it('Should return statusCode 201, User successfully created', (done) => {
-    request(app).post(url)
+    request(app).post(url).set('x-access-token', token)
       .send(validUser)
       .then((res) => {
         expect(res.statusCode).to.equal(201);
@@ -31,7 +46,7 @@ describe('Create a new user', () => {
   });
 
   it('Should return statusCode 400, Failed, Invalid email address ', (done) => {
-    request(app).post(url)
+    request(app).post(url).set('x-access-token', token)
       .send(invalidEmail)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
@@ -42,11 +57,22 @@ describe('Create a new user', () => {
   });
 
   it('Should return statusCode 400, Failed, Missing details ', (done) => {
-    request(app).post(url)
+    request(app).post(url).set('x-access-token', token)
       .send(missingValue)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
         expect(res.body.message).to.equal('Some values are missing');
+        done();
+      })
+      .catch((error) => console.log(error));
+  });
+
+  it('Should return statusCode 401, Failed, Token is not provided ', (done) => {
+    request(app).post(url).set('x-access-token', '')
+      .send(invalidEmail)
+      .then((res) => {
+        expect(res.statusCode).to.equal(401);
+        expect(res.body.message).to.equal('Token is not provided');
         done();
       })
       .catch((error) => console.log(error));

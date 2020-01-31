@@ -32,6 +32,11 @@ const User = {
 
 
     try {
+      const findUserQuery = 'SELECT * FROM users WHERE user_id = $1';
+      const user = await database.query(findUserQuery, [req.user.id]);
+      if (user.rows[0].isadmin !== true) {
+        return res.status(400).send({ message: 'Not permitted' });
+      }
       const { rows } = await database.query(`INSERT INTO users (isAdmin, firstName, lastName, email, password, gender, jobRole, department, address, createdOn, modifiedOn)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) returning *`,
       [isAdmin, firstName, lastName, email, hashPassword, gender, jobRole,

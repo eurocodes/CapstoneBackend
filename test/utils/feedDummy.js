@@ -1,5 +1,5 @@
 /* eslint-disable linebreak-style */
-const creteArticle = {
+const createArticle = {
   validData: {
     title: 'This is my Test title',
     article: 'This is my article body for test',
@@ -10,4 +10,4 @@ const creteArticle = {
   },
 };
 
-module.exports = { creteArticle };
+module.exports = { createArticle };

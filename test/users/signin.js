@@ -9,7 +9,7 @@ const request = require('supertest');
 const app = require('../../app');
 const mockData = require('../utils/userDummy');
 
-const url = '/api/v1/auth/signin';
+const url = '/api/v1/auth/login';
 
 const { validDetails, invalidDetails, missingValue } = mockData.login;
 
