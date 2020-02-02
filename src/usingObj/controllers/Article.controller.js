@@ -94,13 +94,17 @@ const Article = {
    * @returns {object} updated Article
    */
   async modify(req, res) {
-    // const findOneQuery = 'SELECT * FROM feeds WHERE feed_id = $1 and owner_id = $2';
+    const findArticle = 'SELECT * FROM feeds WHERE feed_id = $1';
     const findOneQuery = 'SELECT * FROM users INNER JOIN feeds ON users.user_id = $2 WHERE feeds.feed_id = $1';
     const modifyOneQuery = 'UPDATE feeds SET title = $1, feed = $2, modifiedOn = $3 WHERE feed_id = $4 returning *';
     try {
+      const find = await db.query(findArticle, [req.params.id]);
+      if (!find.rows[0]) {
+        return res.status(404).send({ message: 'This article might have been deleted or does not exist' });
+      }
       const { rows } = await db.query(findOneQuery, [req.params.id, req.user.id]);
       if (req.user.id !== rows[0].owner_id && rows[0].isadmin !== true) {
-        return res.status(404).send({ message: 'Cannot find this article or you don\'t have permission to do this' });
+        return res.status(404).send({ message: 'You don\'t have permission to do this' });
       }
       const values = [
         req.body.title || rows[0].title,
@@ -133,7 +137,7 @@ const Article = {
       }
       const data = await db.query(findOneQuery, [req.params.id, req.user.id]);
       if (req.user.id !== data.rows[0].owner_id && data.rows[0].isadmin !== true) {
-        return res.status(404).send({ message: 'You don\'t have permission to do this' });
+        return res.status(401).send({ message: 'You don\'t have permission to do this' });
       }
       await db.query(deleteQuery, [req.params.id]);
       return res.status(200).send({ message: 'Item deleted successfully' });

@@ -13,8 +13,8 @@ const url = '/api/v1/auth/login';
 
 const { validDetails, invalidDetails, missingValue } = mockData.login;
 
-describe('User signin, 200 OK', () => {
-  it('Should return statusCode 200 OK, User siggned in successfully', (done) => {
+describe('Test for User signin, 200 OK', () => {
+  it('Should let a user successfully sign in', (done) => {
     request(app).post(url)
       .send(validDetails)
       .then((res) => {
@@ -29,7 +29,7 @@ describe('User signin, 200 OK', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400 error, Invalid credentials', (done) => {
+  it('Should fail to sign in, Invalid credentials', (done) => {
     request(app).post(url)
       .send(invalidDetails)
       .then((res) => {
@@ -40,7 +40,7 @@ describe('User signin, 200 OK', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400 error, Incomplete credentials', (done) => {
+  it('Should fail to signin, Incomplete credentials', (done) => {
     request(app).post(url)
       .send(missingValue)
       .then((res) => {

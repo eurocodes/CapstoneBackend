@@ -9,15 +9,15 @@ const request = require('supertest');
 const app = require('../../app');
 const mockFeed = require('../utils/feedDummy');
 
-const url = '/api/v1/post-articles';
+const url = '/api/v1/post/articles';
 const userCredentials = {
-  email: 'iamugee@outlook.com',
+  email: 'iamugee@yahoo.com',
   password: 'password1',
 };
 const { validData, invalidData } = mockFeed.createArticle;
 const expiredToken = process.env.EXPIRED;
 
-describe('Post an Article', () => {
+describe(' Test Post an Article', () => {
   let token;
   before((done) => {
     request(app).post('/api/v1/auth/login')
@@ -28,7 +28,7 @@ describe('Post an Article', () => {
         done();
       });
   });
-  it('Should return statusCode 201, Article successfully created', (done) => {
+  it('Should successfully create an article, statusCode 201 created', (done) => {
     request(app).post(url).set('x-access-token', token)
       .send(validData)
       .then((res) => {
@@ -46,7 +46,7 @@ describe('Post an Article', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Missing field values', (done) => {
+  it('Should fail to create, Missing field values, statusCode 400 error', (done) => {
     request(app).post(url).set('x-access-token', token)
       .send(invalidData)
       .then((res) => {
@@ -58,7 +58,7 @@ describe('Post an Article', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 401, Token is not provided', (done) => {
+  it('Should fail to create, Token is not provided, 401 Unauthorized', (done) => {
     request(app).post(url)
       .send(validData)
       .then((res) => {
@@ -70,7 +70,7 @@ describe('Post an Article', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Invalid access token', (done) => {
+  it('Should fial to create, Invalid access token', (done) => {
     request(app).post(url).set('x-access-token', expiredToken)
       .send(validData)
       .then((res) => {

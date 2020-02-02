@@ -8,8 +8,8 @@ const request = require('supertest');
 const app = require('../../app');
 
 const loginUrl = '/api/v1/auth/login';
-const deleteUrl = '/api/v1/images/delete/6';
-const failedDeleteUrl = '/api/v1/images/delete/7';
+const deleteUrl = '/api/v1/images/delete/33';
+const failedDeleteUrl = '/api/v1/images/delete/34';
 
 const userCredentials = {
   email: 'laryhug209@yahoo.com',
@@ -21,7 +21,7 @@ const wrongUserCredentials = {
 };
 const expiredToken = process.env.EXPIRED;
 
-describe('Delete Image', () => {
+describe('Test Delete Image', () => {
   let token;
   before((done) => {
     request(app).post(loginUrl)
@@ -33,7 +33,7 @@ describe('Delete Image', () => {
       });
   });
 
-  it('Should return statusCode 200, Image deleted successfully', (done) => {
+  it('Should successfully delete an Image, 200 OK', (done) => {
     request(app).delete(deleteUrl).set('x-access-token', token)
       .then((res) => {
         expect(res.statusCode).to.equal(200);
@@ -44,7 +44,7 @@ describe('Delete Image', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 404, Image does not exist', (done) => {
+  it('Should fail to delete, Image does not exist', (done) => {
     request(app).delete(deleteUrl).set('x-access-token', token)
       .then((res) => {
         expect(res.statusCode).to.equal(404);
@@ -55,7 +55,7 @@ describe('Delete Image', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Invalid access token', (done) => {
+  it('Should fail to delete, Invalid access token', (done) => {
     request(app).delete(deleteUrl).set('x-access-token', expiredToken)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
@@ -70,7 +70,7 @@ describe('Delete Image', () => {
   });
 });
 
-describe('Failed Delete Image', () => {
+describe('Test Failed Delete Image, Unauthorized user', () => {
   let token;
   before((done) => {
     request(app).post(loginUrl)
@@ -82,10 +82,10 @@ describe('Failed Delete Image', () => {
       });
   });
 
-  it('Should return statusCode 404, Not permitted', (done) => {
+  it('Should fail to delete, Not permitted', (done) => {
     request(app).delete(failedDeleteUrl).set('x-access-token', token)
       .then((res) => {
-        expect(res.statusCode).to.equal(404);
+        expect(res.statusCode).to.equal(401);
         expect(res.body).to.include.keys('message');
         expect(res.body.message).to.equal('You don\'t have permission to do this');
         done();

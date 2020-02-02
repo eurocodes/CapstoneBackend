@@ -21,7 +21,7 @@ const Comment = {
     try {
       const item = await db.query(itemQuery, [imageId]);
       if (!item.rows[0]) {
-        return res.status(400).send({ message: 'Cannot be found' });
+        return res.status(404).send({ message: 'Cannot be found' });
       }
       const { rows } = await db.query(insertQuery, values);
       return res.status(201).send({
@@ -65,20 +65,22 @@ const Comment = {
    * @param {void} return statusCode 204
    */
   async delete(req, res) {
+    const lookUpQuery = 'SELECT * FROM image_comments WHERE comment_id = $1';
     const findOneQuery = 'SELECT * FROM users INNER JOIN image_comments ON users.user_id = $2 WHERE image_comments.comment_id = $1';
     const deleteQuery = 'DELETE FROM image_comments WHERE comment_id = $1 returning *';
     try {
+      const { rows } = await db.query(lookUpQuery, [req.params.id]);
+      if (!rows[0]) {
+        return res.status(404).send({ message: 'Cannot be found' });
+      }
       const data = await db.query(findOneQuery, [req.params.id, req.user.id]);
       if (req.user.id !== data.rows[0].comment_by && data.rows[0].isadmin !== true) {
-        return res.status(404).send({ message: 'Cannot find this comment or you don\'t have permission to do this' });
+        return res.status(401).send({ message: 'You don\'t have permission to do this' });
       }
-      const { rows } = await db.query(deleteQuery, [req.params.id]);
-      if (!rows[0]) {
-        return res.status(404).send({ message: 'Cannot find this item' });
-      }
+      await db.query(deleteQuery, [req.params.id]);
       return res.status(200).send({ message: 'Comment deleted successfully' });
     } catch (error) {
-      return res.status(400).send({ error });
+      return res.status(400).send(error);
     }
   },
 };
