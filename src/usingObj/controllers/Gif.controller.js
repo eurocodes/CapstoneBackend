@@ -84,14 +84,17 @@ const Gif = {
    */
   async modify(req, res) {
     const file = req.files.image;
-    // const findOneQuery = 'SELECT * FROM feeds WHERE feed_id = $1 and owner_id = $2';
     const findOneQuery = 'SELECT * FROM users INNER JOIN images ON users.user_id = $2 WHERE images.image_id = $1';
     const modifyOneQuery = 'UPDATE images SET title = $1, image_url = $2, modifiedOn = $3, publicId = $4 WHERE image_id = $5 returning *';
-
+    const findImage = 'SELECT * FROM images WHERE image_id = $1';
     try {
+      const find = await db.query(findImage, [req.params.id]);
+      if (!find.rows[0]) {
+        return res.status(404).send({ message: 'This image might have been deleted or does not exist' });
+      }
       const { rows } = await db.query(findOneQuery, [req.params.id, req.user.id]);
       if (req.user.id !== rows[0].owner_id && rows[0].isadmin !== true) {
-        return res.status(404).send({ message: 'Cannot find this article or you don\'t have permission to do this' });
+        return res.status(404).send({ message: 'You don\'t have permission to do this' });
       }
       const gifCloud = await cloudinary.v2.uploader.upload(file.tempFilePath, {
         folder: 'files/images',
@@ -130,7 +133,7 @@ const Gif = {
       }
       const data = await db.query(findOneQuery, [req.params.id, req.user.id]);
       if (req.user.id !== data.rows[0].owner_id && data.rows[0].isadmin !== true) {
-        return res.status(404).send({ message: 'You don\'t have permission to do this' });
+        return res.status(401).send({ message: 'You don\'t have permission to do this' });
       }
       await db.query(deleteQuery, [req.params.id]);
       await cloudinary.v2.uploader.destroy(data.rows[0].publicid);

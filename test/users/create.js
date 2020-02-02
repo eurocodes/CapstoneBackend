@@ -17,7 +17,7 @@ const userCredentials = {
 const url = '/api/v1/auth/sign-up';
 const { validUser, invalidEmail, missingValue } = mockData.createUser;
 
-describe('Create a new user', () => {
+describe('Test for Create a new user', () => {
   let token;
   before((done) => {
     request(app).post('/api/v1/auth/login')
@@ -28,7 +28,7 @@ describe('Create a new user', () => {
         done();
       });
   });
-  it('Should return statusCode 201, User successfully created', (done) => {
+  it('Should successfully create a new user (Only Admin can)', (done) => {
     request(app).post(url).set('x-access-token', token)
       .send(validUser)
       .then((res) => {
@@ -45,7 +45,7 @@ describe('Create a new user', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Failed, Invalid email address ', (done) => {
+  it('Should fail to create give an Invalid email address ', (done) => {
     request(app).post(url).set('x-access-token', token)
       .send(invalidEmail)
       .then((res) => {
@@ -56,7 +56,7 @@ describe('Create a new user', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Failed, Missing details ', (done) => {
+  it('Should fail to create user, Missing details ', (done) => {
     request(app).post(url).set('x-access-token', token)
       .send(missingValue)
       .then((res) => {
@@ -67,7 +67,7 @@ describe('Create a new user', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 401, Failed, Token is not provided ', (done) => {
+  it('Should fail to cerate, Token is not provided ', (done) => {
     request(app).post(url).set('x-access-token', '')
       .send(invalidEmail)
       .then((res) => {

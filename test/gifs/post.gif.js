@@ -8,14 +8,14 @@ const fs = require('fs');
 const app = require('../../app');
 
 const imgDir = 'test/utils/image/Caterpillar.jpg';
-const url = '/api/v1/post-a-gif';
+const url = '/api/v1/post/gifs';
 
 const userCredentials = {
-  email: 'iamugee@outlook.com',
+  email: 'ugonna220@yahoo.com',
   password: 'password1',
 };
 
-describe('Post a gif/image', () => {
+describe('Test Post an Image', () => {
   let token;
   before((done) => {
     request(app).post('/api/v1/auth/login')
@@ -26,9 +26,9 @@ describe('Post a gif/image', () => {
         done();
       });
   });
-  it('Should return statusCode 201, Gif successfully posted', (done) => {
+  it('Should successfully post an Image', (done) => {
     request(app).post(url).set('x-access-token', token)
-      .field({ title: 'Gif title' })
+      .field({ title: 'Image title' })
       .attach('image', fs.readFileSync(imgDir), 'Caterpillar.jpg')
       .then((res) => {
         expect(res.statusCode).to.equal(201);
@@ -47,7 +47,7 @@ describe('Post a gif/image', () => {
         done();
       });
   });
-  it('Should return statusCode 400, Failed \'Title is required\'', (done) => {
+  it('Should Fail to post Image, \'Title is required\'', (done) => {
     request(app).post(url).set('x-access-token', token)
       .field({ title: '' })
       .attach('image', fs.readFileSync(imgDir), 'Caterpillar.jpg')

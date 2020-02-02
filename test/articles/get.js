@@ -18,7 +18,7 @@ const userCredentials = {
 };
 const expiredToken = process.env.EXPIRED;
 
-describe('GET All Article', () => {
+describe('Test for GET All Article', () => {
   let token;
   before((done) => {
     request(app).post(loginUrl)
@@ -29,7 +29,7 @@ describe('GET All Article', () => {
         done();
       });
   });
-  it('Should return statusCode 200, OK', (done) => {
+  it('Should Get all Posts and comments from the db', (done) => {
     request(app).get(getAllItemsUrl).set('x-access-token', token)
       .then((res) => {
         expect(res.statusCode).to.equal(200);
@@ -42,7 +42,7 @@ describe('GET All Article', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 401, Token is not provided', (done) => {
+  it('Should fail to get, Token is not provided', (done) => {
     request(app).get(getAllItemsUrl)
       .then((res) => {
         expect(res.statusCode).to.equal(401);
@@ -53,7 +53,7 @@ describe('GET All Article', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Invalid access token', (done) => {
+  it('Should fail to get, Invalid access token', (done) => {
     request(app).get(getAllItemsUrl).set('x-access-token', expiredToken)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
@@ -79,7 +79,7 @@ describe('GET One Item', () => {
         done();
       });
   });
-  it('Should return statusCode 200, OK', (done) => {
+  it('Should get an Array/Object of an item given the :id, OK', (done) => {
     request(app).get(getOneArticleUrl).set('x-access-token', token)
       .then((res) => {
         expect(res.statusCode).to.equal(200);
@@ -94,7 +94,7 @@ describe('GET One Item', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 401, Token is not provided', (done) => {
+  it('Should fail to get, Token is not provided', (done) => {
     request(app).get(getOneArticleUrl)
       .then((res) => {
         expect(res.statusCode).to.equal(401);
@@ -105,7 +105,7 @@ describe('GET One Item', () => {
       .catch((error) => console.log(error));
   });
 
-  it('Should return statusCode 400, Invalid access token', (done) => {
+  it('Should fail to get, Token is expired', (done) => {
     request(app).get(getOneArticleUrl).set('x-access-token', expiredToken)
       .then((res) => {
         expect(res.statusCode).to.equal(400);
